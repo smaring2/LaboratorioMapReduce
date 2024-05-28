@@ -104,7 +104,7 @@ A continuación se listan diferentes ejercicios básicos de MapReduce con MRJOB 
         6. Día en que mejor evaluación han dado los usuarios
         7. La mejor y peor película evaluada por genero
 
-* Fecha de entrega del informe: Viernes 2 de Junio a las 8:00 am por el buzón de interactiva virtual. La sustentación de los códigos y las actividades realizadas en este laboratorio/reto se programarán posterior a la entrega. Este trabajo es de carácter individual.
+* Fecha de entrega del informe: Viernes 31 de Mayo a las 6:00 pm por el buzón de interactiva virtual. La sustentación de los códigos y las actividades realizadas en este laboratorio/reto se programarán posterior a la entrega. Este trabajo es de carácter individual.
 
 
 
