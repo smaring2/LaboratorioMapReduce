@@ -1,28 +1,28 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 
-class AverageSalaryBySector(MRJob):
+class AvgSalaryBySector(MRJob):
 
     def steps(self):
         return [
             MRStep(mapper=self.mapper_get_salaries,
-                   reducer=self.reducer_avg_salary)
+                   reducer=self.reducer_calculate_avg)
         ]
 
     def mapper_get_salaries(self, _, line):
-        parts = line.split(',')
-        if parts[0] != 'idemp':
-            sececon = parts[1]
-            salary = float(parts[2])
+        fields = line.split(',')
+        if len(fields) == 4:
+            sececon = fields[1]
+            salary = float(fields[2])
             yield sececon, salary
 
-    def reducer_avg_salary(self, sececon, salaries):
+    def reducer_calculate_avg(self, key, values):
         total_salary = 0
         count = 0
-        for salary in salaries:
+        for salary in values:
             total_salary += salary
             count += 1
-        yield sececon, total_salary / count
+        yield key, total_salary / count
 
 if __name__ == '__main__':
-    AverageSalaryBySector.run()
+    AvgSalaryBySector.run()
