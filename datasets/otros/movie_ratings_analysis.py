@@ -19,14 +19,19 @@ class MovieRatingsAnalysis(MRJob):
         ]
 
     def mapper_user_ratings(self, _, line):
-        fields = line.split(',')
-        if len(fields) == 5:
-            user, movie, rating, genre, date = fields
-            yield ('user_ratings', user), (movie, float(rating))
-            yield ('date_movies', date), 1
-            yield ('movie_ratings', movie), (user, float(rating))
-            yield ('date_avg_rating', date), float(rating)
-            yield ('genre_ratings', (genre, movie)), float(rating)
+        try:
+            fields = line.split(',')
+            if len(fields) == 5:
+                user, movie, rating, genre, date = fields
+                rating = float(rating)
+                yield ('user_ratings', user), (movie, rating)
+                yield ('date_movies', date), 1
+                yield ('movie_ratings', movie), (user, rating)
+                yield ('date_avg_rating', date), rating
+                yield ('genre_ratings', (genre, movie)), rating
+        except Exception as e:
+            self.increment_counter('errors', 'bad_lines', 1)
+            self.log(f"Error processing line: {line}\n{str(e)}")
 
     def reducer_user_ratings(self, key, values):
         key_type, key_val = key
