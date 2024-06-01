@@ -10,8 +10,10 @@ class MinMaxPriceByCompany(MRJob):
         ]
 
     def mapper(self, _, line):
-        company, price, date = line.split(',')
-        yield company, (float(price), date)
+        fields = line.split(',')
+        if len(fields) == 3:
+            company, price, date = fields
+            yield company, (float(price), date)
 
     def reducer(self, company, values):
         min_price = float('inf')
@@ -27,7 +29,7 @@ class MinMaxPriceByCompany(MRJob):
                 max_price = price
                 max_date = date
 
-        yield company, (min_date, min_price, max_date, max_price)
+        yield company, {'min_date': min_date, 'min_price': min_price, 'max_date': max_date, 'max_price': max_price}
 
 if __name__ == '__main__':
     MinMaxPriceByCompany.run()

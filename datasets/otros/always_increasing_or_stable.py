@@ -1,24 +1,27 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 
-class AlwaysIncreasingOrStable(MRJob):
+class BlackDay(MRJob):
 
     def steps(self):
         return [
             MRStep(mapper=self.mapper,
-                   reducer=self.reducer)
+                   reducer=self.reducer),
+            MRStep(reducer=self.reducer_find_black_day)
         ]
 
     def mapper(self, _, line):
-        company, price, date = line.split(',')
-        yield company, float(price)
+        fields = line.split(',')
+        if len(fields) == 3:
+            company, price, date = fields
+            yield date, float(price)
 
-    def reducer(self, company, values):
-        prices = list(values)
-        increasing_or_stable = all(x <= y for x, y in zip(prices, prices[1:]))
+    def reducer(self, date, prices):
+        yield None, (date, sum(prices))
 
-        if increasing_or_stable:
-            yield company, "Increasing or Stable"
+    def reducer_find_black_day(self, _, date_sums):
+        black_day = min(date_sums, key=lambda x: x[1])
+        yield 'Black Day', black_day
 
 if __name__ == '__main__':
-    AlwaysIncreasingOrStable.run()
+    BlackDay.run()
